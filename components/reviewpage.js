@@ -49,7 +49,7 @@ export default function reviewpage() {
                 <button className='border-violet-800 border-2 px-2 rounded text-violet-800 hover:scale-105 duration-300'>SAVE AS DRAFT</button>
                 <button className='px-2 h-10 bg-violet-800 text-white rounded-lg hover:scale-105 duration-300' onClick={()=>setreview(true)}>CONTINUE</button>
             </div>
-            <Popup className={`${review?"visible":"hidden"}`} review={review}/>
+            { review ? <Popup review={setreview}/>:null}
         </div>
 
     )

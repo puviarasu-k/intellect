@@ -5,13 +5,18 @@ import { BiChevronRight } from 'react-icons/bi'
 import Recent from '../components/recent'
 import Template from '../components/template'
 import { TiTickOutline } from 'react-icons/ti'
+import { useContext} from 'react';
 
 export default function Firstpage({ cont }) {
+    const theme = useContext(ThemeContext);
+    console.log(ThemeContext);
     const [data, setdata] = React.useState([])
     const [type, settype] = React.useState(false)
     const [search, setsearch] = React.useState(true)
     const [searchvalue, setvalue] = React.useState('')
+    const [loop, setloop] = React.useState(false)
     const [form, setForm] = React.useState({
+        pay:'',
         from: '',
         amount: Number,
         paymentreason: '',
@@ -145,7 +150,10 @@ export default function Firstpage({ cont }) {
         'YER',
         'ZWD',]
     const paysearch = (e) => {
-        setvalue(e.target.value)
+        setForm({
+            ...form,
+            [e.target.id]: e.target.value
+        });
         if (e.target.value == '') {
             setsearch(true)
         }
@@ -170,8 +178,8 @@ export default function Firstpage({ cont }) {
                         <div className='flex justify-between'>
                             <label className=''>Pay<span className='text-red-600'>&emsp;*</span></label>
                             <div className='flex'>
-                                <input className='w-60 border-2 pl-2 py-1' onChange={(e) => paysearch(e)} placeholder='Enter or choose credit amount' />
-                                <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' />
+                                <input className='w-60 border-2 pl-2 py-1' onChange={(e) => paysearch(e)} id='pay' placeholder='Enter or choose credit amount' />
+                                <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' onClick={() => setloop(!loop)} />
                                 {/* dropdown */}
                                 <div className={`${search ? "hidden" : "visible absolute"} mt-9 h-40 w-60 border-2 border-gray-700 bg-white`}>
                                     <h1 className='text-xs'>Search results for&nbsp;&nbsp;{searchvalue}</h1>
@@ -180,10 +188,7 @@ export default function Firstpage({ cont }) {
                         </div>
                         <div className='flex justify-between'>
                             <label className=''>From<span className='text-red-600'>&emsp;*</span></label>
-                            <div className='flex'>
-                                <input className='w-60 border-2 pl-2 py-1' id='from' onChange={handleChange} placeholder='Enter or choose debit amount' />
-                                <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' />
-                            </div>
+                            <input className='w-60 border-2 pl-2 py-1' id='from' onChange={handleChange} placeholder='Enter or choose debit amount' />
                         </div>
                         <div className='flex justify-between'>
                             <label className=''>Amount<span className='text-red-600'>&emsp;*</span></label>
@@ -242,8 +247,7 @@ export default function Firstpage({ cont }) {
                     </div>
                 </div>
                 <div className=' overflow-y-auto w-2/6'>
-                    {/* <Recent/> */}
-                    <Template/>
+                    {loop ? <Template /> : <Recent />}
                 </div>
             </div>
         </div>
