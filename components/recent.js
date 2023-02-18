@@ -12,6 +12,7 @@ export default function Recent({fill}) {
             .then((response) => response.json())
             .then((data) => {
                 setdata(data)
+                console.log(data);
             });
     }, [])
     const click = (item) => {

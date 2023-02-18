@@ -10,11 +10,11 @@ export default function template() {
             </section>
             <hr />
             <div className='flex justify-between p-2'>
-            <h1 className='cursor-pointer'>Name ↑</h1>
-                <h1 className='cursor-pointer'>Last transaction ↓</h1>                
+                <h1 className='cursor-pointer' >Name ↑</h1>
+                <h1 className='cursor-pointer' >Last transaction ↓</h1>
             </div>
             <hr />
-            <Templatecontent/>
+            <Templatecontent />
         </div>
     )
 }
