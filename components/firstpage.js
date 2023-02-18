@@ -16,7 +16,7 @@ export default function Firstpage({ cont }) {
     const [from, setfrom] = React.useState(false)
     const [searchvalue, setvalue] = React.useState('')
     const [loop, setloop] = React.useState(false)
-    const ref= React.useRef()
+    const ref = React.useRef()
     let userctc = useContext(userContext)
     const handleChange = (event) => {
         settype(false)
@@ -26,6 +26,7 @@ export default function Firstpage({ cont }) {
         });
     };
     const submit = () => {
+        console.log(userctc.form);
         if (userctc.form.from == '' || userctc.form.paymentreason == '' || userctc.form.description == '' || userctc.form.currencytype == '') {
             settype(true);
         }
@@ -167,7 +168,7 @@ export default function Firstpage({ cont }) {
     }
     function fromselect(e) {
         setfrom(false)
-        ref.current.value=accoutno
+        ref.current.value = accoutno
         console.log(e.target.id);
         userctc.setForm({
             ...userctc.form,
@@ -191,7 +192,14 @@ export default function Firstpage({ cont }) {
                         <div className='flex justify-between'>
                             <label className=''>Pay<span className='text-red-600'>&emsp;*</span></label>
                             <div className='flex'>
-                                <input className='w-60 border-2 pl-2 py-1' onChange={(e) => paysearch(e)} id='pay' placeholder='Enter or choose credit amount'/>
+                                <input list='browsers' className='w-60 border-2 pl-2 py-1' id='pay' type="search" placeholder='Enter or choose credit amount' />
+                                <datalist id="browsers">
+                                    <option value="Testing data" />
+                                    <option value="Testing data" />
+                                    <option value="Testing data" />
+                                    <option value="Testing data" />
+                                    <option value="Testing data" />
+                                </datalist>
                                 <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' onClick={() => setloop(!loop)} />
                                 {/* dropdown */}
                                 {search ? <div className={`absolute mt-9 h-40 w-60 border-2 border-gray-700 bg-white`}>
@@ -203,7 +211,7 @@ export default function Firstpage({ cont }) {
                         <div className='flex justify-between'>
                             <label className=''>From<span className='text-red-600'>&emsp;*</span></label>
                             <div>
-                                <input className='w-60 border-2 pl-2 py-1' id='from' onClick={() => setfrom(true)} onChange={handleChange} placeholder='Enter or choose debit amount' ref={ref}/>
+                                <input className='w-60 border-2 pl-2 py-1' id='from' onClick={() => setfrom(true)} onChange={handleChange} placeholder='Enter or choose debit amount' ref={ref} />
                                 {from ? <div className={`absolute overflow-hidden rounded mt-1 h-10 w-60 border-2 border-gray-700 bg-white`}>
                                     <h1 className='border-2 w-full cursor-pointer hover:bg-violet-700 hover:text-white hover:rounded-md py-1' id='from' onClick={fromselect}>{accoutno}</h1>
                                 </div> : null
