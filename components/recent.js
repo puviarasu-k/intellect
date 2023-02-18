@@ -5,13 +5,19 @@ import { GoPrimitiveDot } from 'react-icons/go'
 import { AiOutlineFileAdd } from 'react-icons/ai'
 import { GrNotes } from 'react-icons/gr'
 
-export default function Recent({ time, amount, pay }) {
+export default function Recent({fill}) {
     const [data, setdata] = React.useState([])
-    fetch('http://192.168.3.208:3000/recentlist')
-        .then((response) => response.json())
-        .then((data) => {
-            setdata(data)
-        });
+    React.useEffect(() => {
+        fetch('http://localhost:4000/recentList')
+            .then((response) => response.json())
+            .then((data) => {
+                setdata(data)
+            });
+    }, [])
+    const click = (item) => {
+        fill(item)
+    }
+
     return (<>
         <div className='flex p-4 gap-2'>
             <GrNotes className='m-2' />
@@ -24,7 +30,7 @@ export default function Recent({ time, amount, pay }) {
         <div className='overflow-y-auto h-screen'>
             <h1 className='antialiased p-2'>Recent payments</h1>
             {data.map((item) => (
-                <div className='flex cursor-pointer mb-4' key={item.ID}>
+                <div className='flex cursor-pointer mb-4' key={item.ID} onClick={()=>click(item)}>
                     <FaWallet className='m-2' />
                     <div className='space-y-1'>
                         <section className='flex justify-between'>

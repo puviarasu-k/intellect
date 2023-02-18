@@ -12,13 +12,27 @@ import Axios from 'axios'
 export default function Firstpage({ cont }) {
     const accoutno = typeof window !== 'undefined' ? localStorage.getItem("accountno") : null
     const [type, settype] = React.useState(false)
-    const [search, setsearch] = React.useState(false)
     const [from, setfrom] = React.useState(false)
-    const [searchvalue, setvalue] = React.useState('')
+    const [searchvalue, setvalue] = React.useState([])
+    const payref = React.useRef()
+    const fromref = React.useRef()
+    const amountref = React.useRef()
+    const ctref = React.useRef()
+    const prref = React.useRef()
     const [loop, setloop] = React.useState(false)
     const ref = React.useRef()
     let userctc = useContext(userContext)
-    const handleChange = (event) => {
+    const handleChange = async (event) => {
+        if (event.target.id == "pay") {
+            try {
+                // setvalue(event.target.value)
+                let value = event.target.value
+                const res = await Axios.get('http://localhost:4000/intelletUsers/?' + "searchItem=" + value + "&" + "accountNo=" + accoutno);
+                setvalue(res.data.message.accountNo)
+            } catch (error) {
+                console.log(error);
+            }
+        }
         settype(false)
         userctc.setForm({
             ...userctc.form,
@@ -147,39 +161,34 @@ export default function Firstpage({ cont }) {
         'VND',
         'YER',
         'ZWD',]
-    const paysearch = async (e) => {
-        setvalue(e.target.value)
-        let value = e.target.value
-        try {
-            const res = await Axios.get('http://192.168.3.208:3000/intelletUsers/?' + "searchItem=" + value + "&" + "accountNo=" + accoutno);
-        } catch (error) {
-            console.log(error);
-        }
-        userctc.setForm({
-            ...userctc.form,
-            [e.target.id]: e.target.value
-        });
-        if (e.target.value == '') {
-            setsearch(false)
-        }
-        else {
-            setsearch(true)
-        }
-    }
     function fromselect(e) {
         setfrom(false)
-        ref.current.value = accoutno
+        fromref.current.value = accoutno
         console.log(e.target.id);
         userctc.setForm({
             ...userctc.form,
             [e.target.id]: accoutno,
         });
     }
+    function filldata(item) {
+        userctc.form.pay = item.pay
+        userctc.form.from = item.place
+        userctc.form.amount = item.amount
+        userctc.form.paymentreason = item.paymentReason
+        userctc.form.currencytype = item.currencyType
+
+        console.log(item);
+        payref.current.value = item.pay
+        fromref.current.value = item.place
+        amountref.current.value = item.amount
+        prref.current.value = item.paymentReason
+        ctref.current.value = item.currencyType
+    }
 
     return (
         <div>
             <div className='flex justify-between'>
-                <div onClick={() => setsearch(false)} className='w-9/12 flex flex-col items-center gap-6 border-r-2 mb-10 overflow-hidden'>
+                <div className='w-9/12 flex flex-col items-center gap-6 border-r-2 mb-10 overflow-hidden'>
                     <FaMoneyCheckAlt className='w-20 h-20' />
                     <h1 className='antialiased text-2xl'>Pay someone</h1>
                     {/* <progress max={100} value={50} /> */}
@@ -192,7 +201,7 @@ export default function Firstpage({ cont }) {
                         <div className='flex justify-between'>
                             <label className=''>Pay<span className='text-red-600'>&emsp;*</span></label>
                             <div className='flex'>
-                                <input list='browsers' className='w-60 border-2 pl-2 py-1' id='pay' type="search" placeholder='Enter or choose credit amount' />
+                                <input list='browsers' ref={payref} className='w-60 border-2 pl-2 py-1' id='pay' onChange={handleChange} type="search" placeholder='Enter or choose credit amount' />
                                 <datalist id="browsers">
                                     <option value="Testing data" />
                                     <option value="Testing data" />
@@ -201,17 +210,12 @@ export default function Firstpage({ cont }) {
                                     <option value="Testing data" />
                                 </datalist>
                                 <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' onClick={() => setloop(!loop)} />
-                                {/* dropdown */}
-                                {search ? <div className={`absolute mt-9 h-40 w-60 border-2 border-gray-700 bg-white`}>
-                                    <h1 className='border-2 w-full cursor-pointer hover:bg-violet-700 hover:text-white hover:rounded-md py-1' onClick={() => setsearch(false)}>{searchvalue}</h1>
-                                </div> : null
-                                }
                             </div>
                         </div>
                         <div className='flex justify-between'>
                             <label className=''>From<span className='text-red-600'>&emsp;*</span></label>
                             <div>
-                                <input className='w-60 border-2 pl-2 py-1' id='from' onClick={() => setfrom(true)} onChange={handleChange} placeholder='Enter or choose debit amount' ref={ref} />
+                                <input className='w-60 border-2 pl-2 py-1' ref={fromref} id='from' onClick={() => setfrom(true)} onChange={handleChange} placeholder='Enter or choose debit amount' />
                                 {from ? <div className={`absolute overflow-hidden rounded mt-1 h-10 w-60 border-2 border-gray-700 bg-white`}>
                                     <h1 className='border-2 w-full cursor-pointer hover:bg-violet-700 hover:text-white hover:rounded-md py-1' id='from' onClick={fromselect}>{accoutno}</h1>
                                 </div> : null
@@ -221,11 +225,11 @@ export default function Firstpage({ cont }) {
                         <div className='flex justify-between'>
                             <label className=''>Amount<span className='text-red-600'>&emsp;*</span></label>
                             <div>
-                                <input className='w-60 border-2 pl-2 py-1' id='amount' onChange={handleChange} placeholder='Payment amount' />
+                                <input className='w-60 border-2 pl-2 py-1' ref={amountref} id='amount' onChange={handleChange} placeholder='Payment amount' />
                                 <select name="cars" id="currencytype" className='border-2 h-9 w-14' onChange={handleChange}>
                                     {
                                         values.map((item, index) => (
-                                            <option key={index} id='currencytype' value={item}>{item}</option>
+                                            <option key={index} id='currencytype' ref={ctref} value={item}>{item}</option>
                                         ))
                                     }
                                 </select>
@@ -233,7 +237,7 @@ export default function Firstpage({ cont }) {
                         </div>
                         <div className='flex justify-between'>
                             <label>payment reason<span className='text-red-600'>&emsp;*</span></label>
-                            <input className='w-60 border-2 pl-2 py-1' id='paymentreason' onChange={handleChange} placeholder='Choose Payment reason' />
+                            <input className='w-60 border-2 pl-2 py-1' ref={prref} id='paymentreason' onChange={handleChange} placeholder='Choose Payment reason' />
                         </div>
                         <div className='flex justify-between'>
                             <label className=''>Description for benficiary</label>
@@ -275,7 +279,7 @@ export default function Firstpage({ cont }) {
                     </div>
                 </div>
                 <div className='w-2/6'>
-                    {loop ? <Template /> : <Recent />}
+                    {loop ? <Template /> : <Recent fill={filldata} />}
                 </div>
             </div>
         </div>

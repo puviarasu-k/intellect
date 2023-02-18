@@ -23,7 +23,7 @@ export default function Home() {
   const submitbtn = async (e: any) => {
     e.preventDefault();
     try {
-      const res = await Axios.post('http://192.168.3.208:3000/login', form);
+      const res = await Axios.post('http://localhost:4000/login', form);
       console.log(res);
       localStorage.setItem("username",res.data.data[0].userName)
       localStorage.setItem("accountno",res.data.data[0].accountNo)

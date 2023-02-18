@@ -4,11 +4,34 @@ import { MdRateReview } from 'react-icons/md'
 import Popup from '../components/popup'
 import { useContext } from "react";
 import userContext from "../Usercontext"
+import Axios from 'axios'
 
 export default function Reviewpage() {
-    const [review,setreview] = React.useState(false)
+    const [review, setreview] = React.useState(false)
     const theme = useContext(userContext);
     let user = theme.form
+    const accountno = typeof window !== 'undefined' ? localStorage.getItem("accountno") : null
+    const submit = async () => {
+        const form = {
+            amount: user.amount,
+            pay: user.pay,
+            place: user.from,
+            paymentReason: user.paymentreason,
+            IFSCcode: accountno,
+            profileData: "maker",
+            status: "PENDING",
+            currencyType: user.currencytype,
+            accountNo: accountno,
+        }
+        try {
+            const res = await Axios.post('http://localhost:4000/UserDetailsRegistration', form);
+            console.log(res);
+            setreview(true)
+        } catch (error) {
+            alert(error)
+        }
+
+    }
     return (
         <div className='flex flex-col items-center gap-5'>
             <MdRateReview className='w-20 h-20' />
@@ -51,9 +74,9 @@ export default function Reviewpage() {
                 <button className='text-violet-800 hover:scale-105 duration-300'>CANCEL</button>
                 <button className='border-violet-800 border-2 px-2 rounded text-violet-800 hover:scale-105 duration-300'>EDIT PAYMENT DETAILS</button>
                 <button className='border-violet-800 border-2 px-2 rounded text-violet-800 hover:scale-105 duration-300'>SAVE AS DRAFT</button>
-                <button className='px-2 h-10 bg-violet-800 text-white rounded-lg hover:scale-105 duration-300' onClick={()=>setreview(true)}>SUBMIT</button>
+                <button className='px-2 h-10 bg-violet-800 text-white rounded-lg hover:scale-105 duration-300' onClick={submit}>SUBMIT</button>
             </div>
-            { review ? <Popup review={setreview}/>:null}
+            {review ? <Popup review={setreview} /> : null}
         </div>
 
     )

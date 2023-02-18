@@ -1,8 +1,14 @@
 import React from 'react'
 import { CiDeliveryTruck } from 'react-icons/ci'
 import { AiOutlineClockCircle } from 'react-icons/ai'
-export default function templatecontent() {
+export default function Templatecontent() {
     const array = [1, 2, 3, 4, 5, 6, 76, 7,]
+    const [data, setdata] = React.useState([])
+    // fetch('http://localhost:4000/orderchanges')
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //         setdata(data)
+    //     });
     return (
         <>
             {

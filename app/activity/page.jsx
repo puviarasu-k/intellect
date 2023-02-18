@@ -1,20 +1,22 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BsCashStack } from 'react-icons/bs'
 import { AiFillBank } from 'react-icons/ai'
 import { BsFillArrowLeftCircleFill } from 'react-icons/bs'
 import { FaFileInvoiceDollar } from 'react-icons/fa'
 import { BsClockHistory } from 'react-icons/bs'
 import { IoMdCloseCircleOutline } from 'react-icons/io'
-import Axios from 'axios';
-
-async function getData() {
-  const res = await Axios.post('http://192.168.3.208:3000/traceGet');
-  console.log(res);
-}
-
 export default function page() {
-  // const data = await getData();
+  const [data, setdata] = React.useState([])
+  useEffect(() => {
+    fetch("http://localhost:4000/traceGet?" + "accountNo=" + "c68a50b3-7bcb-4bf9-aaff-2dbb5ca06da9")
+      .then((response) => response.json())
+      .then((data) => {
+        setdata(data.query)
+        console.log(data.query);
+      });
+  }, [])
+
   const [open, setopen] = React.useState(true)
   return (
     <div className=''>
@@ -34,99 +36,38 @@ export default function page() {
 
         </div>
       </div>
-      <div className={`absolute h-screen ${open ? "w-96" : "w-20"} top-0 duration-300 border-2 right-0 bg-white overflow-y-auto`}>
-        <div className='h-10 p-3 flex justify-between font-semibold text-2xl'>
+      <div className={`absolute h-screen ${open ? "w-96" : "w-12"} top-0 duration-300 border-2 right-0 bg-white overflow-y-auto`}>
+        <div className='h-10 p-1 flex justify-between font-semibold text-2xl'>
           <span className={`${open ? "visible" : "hidden"}`}>Activity</span>
           {open ?
-            <IoMdCloseCircleOutline className='cursor-pointer' onClick={() => setopen(!open)} /> : <BsFillArrowLeftCircleFill className='cursor-pointer' onClick={() => setopen(!open)}/>
+            <IoMdCloseCircleOutline className='cursor-pointer hover:scale-125 hover:text-violet-700 hover:bg-white hover:rounded-full' onClick={() => setopen(!open)} /> : <BsFillArrowLeftCircleFill className='ml-2 cursor-pointer hover:scale-125 hover:text-violet-700 hover:bg-white hover:rounded-full' onClick={() => setopen(!open)} />
           }
 
         </div>
 
-        <div>
-          <div className='ml-4 rounded w-80 h-48 border-2 flex gap-2 space-y-3'>
-            <BsClockHistory className='ml-2 mt-3' />
-            <div>
-              <h1 className='text-sm font-semibold'>Payment batch is pending for your approval</h1>
-              <h1 className='text-sm'>A group of book transfer payment(s) from the </h1>
-              <h1 className='text-sm'>batch with</h1>
-              <h1 className='text-sm'>has been initiated</h1>
-              <h1 className='text-sm'>1 payment of are pending your</h1>
-              <h1 className='text-sm'>approval</h1>
-              <h1 className='text-sm text-violet-700 cursor-pointer'>View batch</h1>
-              <section className='flex justify-between'>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-red-700 rounded' onClick={console.log("lsdfcs")}>Reject</button>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-green-700 rounded'>Verify</button>
-              </section>
+        {data.map((item) => (
+          <div className={`${open ? "visible" : "hidden"}`}>
+            <div className='ml-4 rounded w-80 h-48 border-2 flex gap-2 space-y-3'>
+              <BsClockHistory className='ml-2 mt-3' />
+              <div>
+                <h1 className='text-sm font-semibold'>Payment batch is pending for your approval</h1>
+                <h1 className='text-sm'>A group of book transfer payment(s) from the </h1>
+                <h1 className='text-sm'>batch TLA_SPLIT_3 with PAY_BATCH_436745</h1>
+                <h1 className='text-sm'>has been initiated</h1>
+                <h1 className='text-sm'>1 payment of {item.amount} {item.currencyType} are pending your</h1>
+                <h1 className='text-sm'>approval</h1>
+                <h1 className='text-sm text-violet-700 cursor-pointer'>View batch</h1>
+                <section className='flex justify-between'>
+                  <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-red-700 rounded' onClick={console.log("lsdfcs")}>Reject</button>
+                  <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-green-700 rounded'>Verify</button>
+                </section>
+              </div>
+            </div>
+            <div className=' ml-7 h-14 border-2 w-1 bg-black'>
+
             </div>
           </div>
-          <div className=' ml-7 h-14 border-2 w-1 bg-black'>
-
-          </div>
-        </div>
-        <div>
-          <div className='ml-4 rounded w-80 h-48 border-2 flex gap-2 space-y-3'>
-            <BsClockHistory className='ml-2 mt-3' />
-            <div>
-              <h1 className='text-sm font-semibold'>Payment batch is pending for your approval</h1>
-              <h1 className='text-sm'>A group of book transfer payment(s) from the </h1>
-              <h1 className='text-sm'>batch with</h1>
-              <h1 className='text-sm'>has been initiated</h1>
-              <h1 className='text-sm'>1 payment of are pending your</h1>
-              <h1 className='text-sm'>approval</h1>
-              <h1 className='text-sm text-violet-700 cursor-pointer'>View batch</h1>
-              <section className='flex justify-between'>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-red-700 rounded' onClick={console.log("lsdfcs")}>Reject</button>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-green-700 rounded'>Verify</button>
-              </section>
-            </div>
-          </div>
-          <div className=' ml-7 h-14 border-2 w-1 bg-black'>
-
-          </div>
-        </div>
-        <div>
-          <div className='ml-4 rounded w-80 h-48 border-2 flex gap-2 space-y-3'>
-            <BsClockHistory className='ml-2 mt-3' />
-            <div>
-              <h1 className='text-sm font-semibold'>Payment batch is pending for your approval</h1>
-              <h1 className='text-sm'>A group of book transfer payment(s) from the </h1>
-              <h1 className='text-sm'>batch with</h1>
-              <h1 className='text-sm'>has been initiated</h1>
-              <h1 className='text-sm'>1 payment of are pending your</h1>
-              <h1 className='text-sm'>approval</h1>
-              <h1 className='text-sm text-violet-700 cursor-pointer'>View batch</h1>
-              <section className='flex justify-between'>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-red-700 rounded' onClick={console.log("lsdfcs")}>Reject</button>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-green-700 rounded'>Verify</button>
-              </section>
-            </div>
-          </div>
-          <div className=' ml-7 h-14 border-2 w-1 bg-black'>
-
-          </div>
-        </div>
-        <div>
-          <div className='ml-4 rounded w-80 h-48 border-2 flex gap-2 space-y-3'>
-            <BsClockHistory className='ml-2 mt-3' />
-            <div>
-              <h1 className='text-sm font-semibold'>Payment batch is pending for your approval</h1>
-              <h1 className='text-sm'>A group of book transfer payment(s) from the </h1>
-              <h1 className='text-sm'>batch with</h1>
-              <h1 className='text-sm'>has been initiated</h1>
-              <h1 className='text-sm'>1 payment of are pending your</h1>
-              <h1 className='text-sm'>approval</h1>
-              <h1 className='text-sm text-violet-700 cursor-pointer'>View batch</h1>
-              <section className='flex justify-between'>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-red-700 rounded' onClick={console.log("lsdfcs")}>Reject</button>
-                <button className='hover:scale-105 cursor-pointer text-white px-8 py-1 bg-green-700 rounded'>Verify</button>
-              </section>
-            </div>
-          </div>
-          <div className=' ml-7 h-14 border-2 w-1 bg-black'>
-
-          </div>
-        </div>
+        ))}
       </div>
       {/* <div class="max-w-lg mx-auto p-8">
         <details class="open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg" open>
@@ -140,7 +81,7 @@ export default function page() {
       </div> */}
       {/* <br /> */}
       <div>
-        <details className='open:bg-white mt-10 border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' open>
+        <details className='open:bg-white mt-10 border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg'>
           <summary class="text-sm leading-6 text-slate-900 font-semibold select-none">
             BILL
           </summary>
@@ -150,7 +91,7 @@ export default function page() {
         </details>
       </div>
       <div>
-        <details className='open:bg-white border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' open>
+        <details className='open:bg-white border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' >
           <summary class="text-sm leading-6 text-slate-900 font-semibold select-none">
             CURRENT
           </summary>
@@ -160,7 +101,7 @@ export default function page() {
         </details>
       </div>
       <div>
-        <details className='open:bg-white border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' open>
+        <details className='open:bg-white border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' >
           <summary class="text-sm leading-6 text-slate-900 font-semibold select-none">
             INVESTMENT
           </summary>
@@ -170,7 +111,7 @@ export default function page() {
         </details>
       </div>
       <div>
-        <details className='open:bg-white border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' open>
+        <details className='open:bg-white border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg' >
           <summary class="text-sm leading-6 text-slate-900 font-semibold select-none">
             SAVINGS
           </summary>
