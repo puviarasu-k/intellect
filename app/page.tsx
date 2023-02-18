@@ -22,13 +22,15 @@ export default function Home() {
   };
   const submitbtn = async (e: any) => {
     e.preventDefault();
-    const res = await Axios.post('http://192.168.3.208:3000/login', form);
-    console.log(res);
-    if (!res.data.access) {
-      setlogin(true)
-    }
-    else {
+    try {
+      const res = await Axios.post('http://192.168.3.208:3000/login', form);
+      console.log(res);
+      localStorage.setItem("username",res.data.data[0].userName)
+      localStorage.setItem("accountno",res.data.data[0].accountNo)
+      localStorage.setItem("role",res.data.data[0].profileData)      
       router.push('/dashboard')
+    } catch (error) {
+      setlogin(true)
     }
   }
 
