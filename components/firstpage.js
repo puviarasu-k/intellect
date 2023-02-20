@@ -13,11 +13,12 @@ export default function Firstpage({ cont }) {
     const accoutno = typeof window !== 'undefined' ? localStorage.getItem("accountno") : null
     const [type, settype] = React.useState(false)
     const [from, setfrom] = React.useState(false)
-    const [searchvalue, setvalue] = React.useState([])
+    const [searchvalue, setvalue] = React.useState([{ a: 1 }, { a: 6 }, { a: 6 }])
     const payref = React.useRef()
     const fromref = React.useRef()
     const amountref = React.useRef()
     const ctref = React.useRef()
+    const data = ["one", "two", "three"]
     const prref = React.useRef()
     const [loop, setloop] = React.useState(false)
     const ref = React.useRef()
@@ -203,11 +204,7 @@ export default function Firstpage({ cont }) {
                             <div className='flex'>
                                 <input list='browsers' ref={payref} className='w-60 border-2 pl-2 py-1' id='pay' onChange={handleChange} type="search" placeholder='Enter or choose credit amount' />
                                 <datalist id="browsers">
-                                    <option value="Testing data" />
-                                    <option value="Testing data" />
-                                    <option value="Testing data" />
-                                    <option value="Testing data" />
-                                    <option value="Testing data" />
+                                    {data.map((op) => <option>{op}</option>)}
                                 </datalist>
                                 <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' onClick={() => setloop(!loop)} />
                             </div>
