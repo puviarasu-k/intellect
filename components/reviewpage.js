@@ -1,24 +1,26 @@
 import React from 'react'
-import { TiTickOutline } from 'react-icons/ti'
 import { MdRateReview } from 'react-icons/md'
 import Popup from '../components/popup'
 import { useContext } from "react";
 import userContext from "../Usercontext"
 import Axios from 'axios'
+import { BsCheck2Circle } from 'react-icons/bs';
 
 export default function Reviewpage() {
     const [review, setreview] = React.useState(false)
+    const [count, setcount] = React.useState(false)
     const theme = useContext(userContext);
     let user = theme.form
     const accountno = typeof window !== 'undefined' ? localStorage.getItem("accountno") : null
+    const role = typeof window !== 'undefined' ? localStorage.getItem("role") : null
     const submit = async () => {
         const form = {
             amount: user.amount,
             pay: user.pay,
             place: user.from,
             paymentReason: user.paymentreason,
-            IFSCcode: accountno,
-            profileData: "maker",
+            IFSCcode: user.IFSC,
+            profileData: role,
             status: "PENDING",
             currencyType: user.currencytype,
             accountNo: accountno,
@@ -28,19 +30,19 @@ export default function Reviewpage() {
             console.log(res);
             setreview(true)
         } catch (error) {
-            alert(error)
+            setcount(true)
         }
 
     }
     return (
         <div className='flex flex-col items-center gap-5'>
-            <MdRateReview className='w-20 h-20' />
-            <h1 className='text-3xl'>Review and confirm</h1>
-            <div className='flex'>
-                <TiTickOutline className='w-10 h-10 bg-green-500 text-white rounded-full' /><hr className='border-green-500 border-dashed border-2 w-48 mt-5' /><TiTickOutline className='w-10 h-10 bg-violet-700 text-white rounded-full' />
+            <MdRateReview className={`w-20 h-20 ${count ? "blur-sm" : ""}`} />
+            <h1 className={`text-3xl ${count ? "blur-sm" : ""}`}>Review and confirm</h1>
+            <div className={`flex ${count ? "blur-sm" : ""}`}>
+                <BsCheck2Circle className='w-10 h-10 bg-green-500 text-white rounded-full' /><hr className='border-green-500 border-dashed border-2 w-48 mt-5' /><BsCheck2Circle className='w-10 h-10 bg-violet-700 text-white rounded-full' />
             </div>
-            <p className='text-sm'>Please your details to make sure all the details are correct</p>
-            <div className='flex flex-col w-3/5'>
+            <p className={`text-sm ${count ? "blur-sm" : ""}`}>Please your details to make sure all the details are correct</p>
+            <div className={`flex flex-col w-3/5 ${count ? "blur-sm" : ""}`}>
                 <h1>accounttrster will recieve {user.amount} {user.currencytype} on 30-03-2020</h1>
                 <hr className='border-1'></hr>
                 <div className='flex justify-between'>
@@ -70,7 +72,15 @@ export default function Reviewpage() {
                 </div>
                 <hr className='border-1'></hr>
             </div>
-            <div className='flex gap-8'>
+            {
+                count ? <dialog className='border-2 border-violet-700 absolute inset-0 rounded' open>
+                    <p>Checker cannot make a payment</p>
+                    <form method="dialog">
+                        <button onClick={() => setcount(false)} className='border-2 border-violet-700 hover:bg-violet-700 hover:text-white rounded p-1'>OK</button>
+                    </form>
+                </dialog> : null
+            }
+            <div className={`flex gap-8 ${count ? "blur-sm" : ""}`}>
                 <button className='text-violet-800 hover:scale-105 duration-300'>CANCEL</button>
                 <button className='border-violet-800 border-2 px-2 rounded text-violet-800 hover:scale-105 duration-300'>EDIT PAYMENT DETAILS</button>
                 <button className='border-violet-800 border-2 px-2 rounded text-violet-800 hover:scale-105 duration-300'>SAVE AS DRAFT</button>

@@ -23,7 +23,7 @@ export default function popup({ review }) {
       <h1 className='text-center'>What do you want to do next?</h1>
       <section className='space-x-8'>
         <Link href="/dashboard" className='hover:border-2 border-violet-700 rounded-md p-2' onClick={() => review(false)}>Go back to payments</Link>
-        <button className='border-2 border-green-900 p-1 rounded-md'>Make another payment</button>
+        <a href='/dashboard' className='border-2 border-green-900 p-1 rounded-md'>Make another payment</a>
       </section>
     </div>
   )

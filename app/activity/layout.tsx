@@ -1,4 +1,4 @@
-// import './../globals.css'
+'use client'
 import React from 'react'
 import { GoThreeBars } from 'react-icons/go'
 import { RiErrorWarningLine } from 'react-icons/ri'
@@ -31,7 +31,7 @@ export default function DashboardLayout({
             </div>
             <TbNotes className='w-8 h-8 hover:text-white  cursor-pointer mt-1' />
             <FaRegComments className='w-8 h-8 hover:text-white cursor-pointer mt-1' />
-            <MdOutlineLibraryBooks className='w-8 h-8 hover:text-white cursor-pointer mt-1' />
+            <MdOutlineLibraryBooks id="activity" className='target:bg-white w-8 h-8 hover:text-white cursor-pointer mt-1' />
             <TbWaveSawTool className='w-8 h-8 hover:text-white cursor-pointer mt-1' />
             <RiErrorWarningLine className='w-8 h-8 hover:text-white cursor-pointer mt-1' />
           </div>

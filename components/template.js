@@ -2,27 +2,105 @@ import React from 'react'
 import { CiDeliveryTruck } from 'react-icons/ci'
 import { AiOutlineClockCircle } from 'react-icons/ai'
 
-export default function template() {
-    const array = [1, 2, 3, 4, 5, 6, 7, 8,]
-    const values = [2, 4, 6, 8]
-    const [list, setlist] = React.useState(2)
-    const [data, setdata] = React.useState(Array.from({ length: list }))
+export default function Template() {
+    const [TotalCount, settotal] = React.useState()
+    const values = [
+        {
+            pagenumber: 2,
+            index: 0
+        },
+        {
+            pagenumber: 4,
+            index: 1
+        },
+        {
+            pagenumber: 6,
+            index: 2
+        },
+        {
+            pagenumber: 8,
+            index: 3
+        }
+    ]
+    const [name, setname] = React.useState(true)
+    const [last, setlast] = React.useState(true)
+    const [namesort, setnamesort] = React.useState("ASC")
+    const [data, setdata] = React.useState([])
+    const [page, setpage] = React.useState(4)
+    const [pageS, setpageSize] = React.useState(2)
+    const array = Array.from({ length: page }, (_, i) => i + 1)
+
     const ref = React.useRef()
-    console.log(list);
-    const click = (item)=>{
-        console.log(item); 
-        ref.current.className = "bg-violet-700"
+    React.useEffect(() => {
+        let sortItemBy = "userName"
+        let sortBy = namesort
+        let pageSize = pageS
+        let searchItem = ""
+        let accountNo = "9318c49d-e229-4533-81b3-4d09dea671d4"
+        let totalOffset = pageSize * 0
+        fetch('http://localhost:4000/orderchanges?' + "totalOffset=" + totalOffset + "&" + "sortItemBy=" + sortItemBy + "&" + "sortBy=" + sortBy + "&" + "pageSize=" + pageSize + "&" + "searchItem=" + searchItem + "&" + "accountNo=" + accountNo)
+            .then((response) => response.json())
+            .then((data) => {
+                const value = data.TotalCount / pageS
+                settotal(data.TotalCount)
+                setpage(Math.round(value));
+                setdata(data.Data)
+            });
+    }, [])
+
+    const click = (item, type) => {
+        let sortItemBy = "userName"
+        let sortBy = namesort
+        let pageSize = pageS
+        let searchItem = ""
+        let totalOffset = pageSize * 1
+        let accountNo = "9318c49d-e229-4533-81b3-4d09dea671d4"
+        if (type == "pageSize") {
+            totalOffset = 0
+            setpageSize(item)
+            pageSize = item
+            const value = TotalCount / item
+            setpage(Math.round(value));
+        }
+        if (type == "sortBy" && item == "userName") {
+            sortItemBy = item
+            totalOffset = 0
+            sortBy = name ? "DESC" : "ASC"
+            setnamesort(sortBy)
+            setname(!name)
+        }
+        if (type == "sortBy" && item == "entryTime") {
+            sortItemBy = item
+            totalOffset = 0
+            sortBy = last ? "DESC" : "ASC"
+            setnamesort(sortBy)
+            setlast(!last)
+        }
+        if (type == "pageno") {
+            sortBy = namesort
+            totalOffset =Math.max(TotalCount - pageSize * item,0)
+        }
+        if (type == "searchItem") {
+            totalOffset = 0
+            searchItem = item
+        }
+        fetch('http://localhost:4000/orderchanges?' + "totalOffset=" + totalOffset + "&" + "sortItemBy=" + sortItemBy + "&" + "sortBy=" + sortBy + "&" + "pageSize=" + pageSize + "&" + "searchItem=" + searchItem + "&" + "accountNo=" + accountNo)
+            .then((response) => response.json())
+            .then((data) => {
+                settotal(data.TotalCount)
+                setdata(data.Data)
+            });
     }
     return (
         <div>
             <section className='p-6 gap-4'>
-                <h1 className=''>Choose an account to pay</h1><br />
-                <input className='w-56 h-8 border-2 pl-2' placeholder='Search accounts' />
+                <h1>Choose an account to pay</h1><br />
+                <input className='w-56 h-8 border-2 pl-2' onChange={(e) => click(e.target.value, "searchItem")} placeholder='Search accounts' />
             </section>
             <hr />
             <div className='flex justify-between p-2'>
-                <h1 className='cursor-pointer' >Name ↑</h1>
-                <h1 className='cursor-pointer' >Last transaction ↓</h1>
+                <h1 className='cursor-pointer' onClick={() => click("userName", "sortBy")} >Name {name ? <>↑</> : <>↓</>}</h1>
+                <h1 className='cursor-pointer' onClick={() => click("entryTime", "sortBy")} >Last transaction {last ? <>↑</> : <>↓</>}</h1>
             </div>
             <hr />
             {
@@ -31,36 +109,33 @@ export default function template() {
                         <section className='flex justify-between'>
                             <section className='flex'>
                                 <CiDeliveryTruck />
-                                <span className='text-xs'>testyacc</span>
+                                <span className='text-xs'>{item.userName}</span>
                             </section>
                             <section className='flex'>
                                 <AiOutlineClockCircle />
-                                <span className='text-xs'>09/02/2023</span>
+                                <span className='text-xs'>{item.entryTime}</span>
                             </section>
                         </section>
-                        <h1 className='ml-5 text-sm'>AM0L00710</h1>
+                        <h1 className='ml-5 text-sm'>{item.IFSCcode}</h1>
                         <hr />
                     </div>
                 ))
             }
-            <section className='border-2 h-14 flex justify-around'>
-                <select id='currencytype' onClick={(e) => click(e.target.value)} className="w-20 h-10 rounded text-center p-1 border-2 border-violet-700">
+            <section className='border-2 h-14 flex justify-around items-center'>
+                <select id='currencytype' onChange={(e) => click(e.target.value, "pageSize")} className="w-20 h-10 rounded text-center p-1 border-2 border-violet-700">
                     {
                         values.map((item, index) => (
-                            <option key={index} id='currencytype' className='w-20'>{item}</option>
+                            <option key={index} id='currencytype' className='w-20'>{item.pagenumber}</option>
                         ))
                     }
                 </select>
 
                 <nav>
-                    <ul class="pagination total-link flex border-2">
+                    <ul className="pagination total-link flex border-2">
                         {
-                            array.map((item) => {
-                                return (
-                                    <li ref={ref} id={item} onClick={()=>click(item)} className='text-center rounded w-10 border-2 border-violet-700 hover:bg-violet-700 hover:text-white active'>
-                                        <a class="active" >{item}</a>
-                                    </li>)
-                            })
+                            array.map((item) => (
+                                <li key={item} ref={ref} onClick={() => click(item, "pageno")} className='cursor-pointer text-center rounded w-10 border-2 border-violet-700 hover:bg-violet-700 hover:text-white'>{item} </li>
+                            ))
                         }
                     </ul>
                 </nav>

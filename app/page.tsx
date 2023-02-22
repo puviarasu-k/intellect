@@ -3,7 +3,6 @@ import React from 'react'
 import Axios from "axios"
 import Image from 'next/image'
 import image from '../public/pngwing.com.png'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function Home() {
@@ -24,7 +23,6 @@ export default function Home() {
     e.preventDefault();
     try {
       const res = await Axios.post('http://localhost:4000/login', form);
-      console.log(res);
       localStorage.setItem("username",res.data.data[0].userName)
       localStorage.setItem("accountno",res.data.data[0].accountNo)
       localStorage.setItem("role",res.data.data[0].profileData)      

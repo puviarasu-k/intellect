@@ -2,7 +2,6 @@
 import { BiArrowBack } from 'react-icons/bi'
 import Reviewpage from '../../components/reviewpage'
 import Firstpage from '../../components/firstpage'
-// import { useContext } from "react";
 import userContext from "../../Usercontext";
 import React from 'react'
 export default function Home() {
@@ -13,6 +12,7 @@ export default function Home() {
     paymentreason: '',
     description: '',
     currencytype: 'INR',
+    ifsc:''
   });
   const [cont, setcont] = React.useState(false)
   return (
