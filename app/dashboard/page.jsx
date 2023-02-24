@@ -23,9 +23,9 @@ export default function Home() {
           <h1 className='font-semibold' onClick={() => setcont(false)}>Back to previous</h1>
         </div>
         <hr />
-        {//@ts-ignore      
-          cont ? <Reviewpage /> : <Firstpage cont={setcont} />
-        }
+              
+          {/* cont ? <Reviewpage /> : <Firstpage cont={setcont} /> */}
+        
       </div>
     </userContext.Provider>
   )

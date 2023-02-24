@@ -2,7 +2,9 @@ import React from 'react'
 import { MdRateReview } from 'react-icons/md'
 import Popup from '../components/popup'
 import { useContext } from "react";
+import { BiErrorCircle } from 'react-icons/bi'
 import userContext from "../Usercontext"
+import Notify from '../components/notify'
 import Axios from 'axios'
 import { BsCheck2Circle } from 'react-icons/bs';
 
@@ -11,6 +13,7 @@ export default function Reviewpage() {
     const [count, setcount] = React.useState(false)
     const theme = useContext(userContext);
     let user = theme.form
+    console.log(user);
     const accountno = typeof window !== 'undefined' ? localStorage.getItem("accountno") : null
     const role = typeof window !== 'undefined' ? localStorage.getItem("role") : null
     const submit = async () => {
@@ -19,7 +22,7 @@ export default function Reviewpage() {
             pay: user.pay,
             place: user.from,
             paymentReason: user.paymentreason,
-            IFSCcode: user.IFSC,
+            IFSCcode: user.ifsc,
             profileData: role,
             status: "PENDING",
             currencyType: user.currencytype,
@@ -27,7 +30,6 @@ export default function Reviewpage() {
         }
         try {
             const res = await Axios.post('http://localhost:4000/UserDetailsRegistration', form);
-            console.log(res);
             setreview(true)
         } catch (error) {
             setcount(true)
@@ -73,12 +75,7 @@ export default function Reviewpage() {
                 <hr className='border-1'></hr>
             </div>
             {
-                count ? <dialog className='border-2 border-violet-700 absolute inset-0 rounded' open>
-                    <p>Checker cannot make a payment</p>
-                    <form method="dialog">
-                        <button onClick={() => setcount(false)} className='border-2 border-violet-700 hover:bg-violet-700 hover:text-white rounded p-1'>OK</button>
-                    </form>
-                </dialog> : null
+                count ? <Notify content="Checker cannot submit a payment" topic="Failure" Logo={<BiErrorCircle className='w-14 h-14 text-green-600' ></BiErrorCircle>} /> : null
             }
             <div className={`flex gap-8 ${count ? "blur-sm" : ""}`}>
                 <button className='text-violet-800 hover:scale-105 duration-300'>CANCEL</button>

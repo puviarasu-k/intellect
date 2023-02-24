@@ -1,8 +1,9 @@
 import React from 'react'
 import { CiDeliveryTruck } from 'react-icons/ci'
+import { AiFillCloseCircle } from 'react-icons/ai'
 import { AiOutlineClockCircle } from 'react-icons/ai'
 
-export default function Template() {
+export default function Template({ loop, setloop }) {
     const [TotalCount, settotal] = React.useState()
     const values = [
         {
@@ -28,6 +29,7 @@ export default function Template() {
     const [data, setdata] = React.useState([])
     const [page, setpage] = React.useState(4)
     const [pageS, setpageSize] = React.useState(2)
+    const [currentpage, setcurrentpage] = React.useState(0)
     const array = Array.from({ length: page }, (_, i) => i + 1)
 
     const ref = React.useRef()
@@ -53,10 +55,10 @@ export default function Template() {
         let sortBy = namesort
         let pageSize = pageS
         let searchItem = ""
-        let totalOffset = pageSize * 1
+        let totalOffset = pageSize * currentpage
         let accountNo = "9318c49d-e229-4533-81b3-4d09dea671d4"
         if (type == "pageSize") {
-            totalOffset = 0
+            totalOffset = pageS * currentpage
             setpageSize(item)
             pageSize = item
             const value = TotalCount / item
@@ -64,7 +66,7 @@ export default function Template() {
         }
         if (type == "sortBy" && item == "userName") {
             sortItemBy = item
-            totalOffset = 0
+            totalOffset = pageSize * currentpage
             sortBy = name ? "DESC" : "ASC"
             setnamesort(sortBy)
             setname(!name)
@@ -77,8 +79,9 @@ export default function Template() {
             setlast(!last)
         }
         if (type == "pageno") {
+            setcurrentpage(item)
             sortBy = namesort
-            totalOffset =Math.max(TotalCount - pageSize * item,0)
+            totalOffset = pageSize * item
         }
         if (type == "searchItem") {
             totalOffset = 0
@@ -92,10 +95,13 @@ export default function Template() {
             });
     }
     return (
-        <div>
+        <div className={`top-0 bg-white h-screen overflow-y-auto fixed right-0 ${loop ? "translate-x-0 w-2/6 shadow-2xl shadow-violet-700/50 bg-blend-overlay" : "w-2/6 translate-x-full"} duration-700`}>
             <section className='p-6 gap-4'>
-                <h1>Choose an account to pay</h1><br />
-                <input className='w-56 h-8 border-2 pl-2' onChange={(e) => click(e.target.value, "searchItem")} placeholder='Search accounts' />
+                <section className='flex justify-between'>
+                    <h1>Choose an account to pay</h1>
+                    <AiFillCloseCircle onClick={() => setloop(false)} className='w-6 h-6 cursor-pointer hover:bg-violet-700 hover:text-white rounded-full hover:scale-110' />
+                </section><br />
+                <input type="search" className='w-56 h-8 border-2 pl-2' onChange={(e) => click(e.target.value, "searchItem")} placeholder='Search accounts' />
             </section>
             <hr />
             <div className='flex justify-between p-2'>
@@ -134,7 +140,7 @@ export default function Template() {
                     <ul className="pagination total-link flex border-2">
                         {
                             array.map((item) => (
-                                <li key={item} ref={ref} onClick={() => click(item, "pageno")} className='cursor-pointer text-center rounded w-10 border-2 border-violet-700 hover:bg-violet-700 hover:text-white'>{item} </li>
+                                <li key={item} ref={ref} onClick={() => click(item - 1, "pageno")} className='cursor-pointer text-center rounded w-10 border-2 border-violet-700 hover:bg-violet-700 hover:text-white'>{item} </li>
                             ))
                         }
                     </ul>

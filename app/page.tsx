@@ -36,7 +36,6 @@ export default function Home() {
     <>
       <body className='bg-slate-800'>
         <h1 className='text-white text-2xl p-5 font-bold mb-10'>IGT Bank</h1>
-
         <div className='flex flex-col md:flex-row justify-around'>
           <div className='bg-gradient-to-r from-green-400 to-blue-500 hover:scale-105 ease-in-out duration-300 h-80 w-96 rounded-lg flex flex-col justify-evenly items-center'>
             <div className='flex flex-col'>

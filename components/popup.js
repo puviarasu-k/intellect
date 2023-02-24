@@ -4,12 +4,9 @@ import { CgProfile } from 'react-icons/cg'
 import Link from 'next/link';
 
 export default function popup({ review }) {
-  console.log(review);
   return (
     <div className={`shadow-2xl w-[40%] h-[60%] border-2 items-center mt-10 bg-white fixed flex flex-col justify-evenly`}>
-      
-        <GiConfirmed className='w-14 h-14 text-green-600' ></GiConfirmed>
-        
+      <GiConfirmed className='w-14 h-14 text-green-600' ></GiConfirmed>
       <h1 className='text-violet-700 font-semibold text-center'>SUCCESS!</h1>
       <div>
         <h1 >payment 893479346893-34767 of 34.00 THB</h1>

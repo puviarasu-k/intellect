@@ -16,13 +16,14 @@ export default function Firstpage({ cont }) {
     const amountref = React.useRef()
     const ctref = React.useRef()
     const prref = React.useRef()
+    const [paytouch, setpay] = React.useState(false)
     const [loop, setloop] = React.useState(false)
     let userctc = useContext(userContext)
     const handleChange = async (event) => {
         if (event.target.id == "pay") {
             try {
+                setpay(true)
                 let value = event.target.value
-                console.log("varuthu");
                 const res = await Axios.get('http://localhost:4000/intelletUsers/?' + "searchItem=" + value + "&" + "accountNo=" + accoutno);
                 setvalue(res.data.query)
             } catch (error) {
@@ -154,23 +155,32 @@ export default function Firstpage({ cont }) {
         'YER',
         'ZWD',]
     function filldata(item) {
+        console.log(item);
         userctc.form.pay = item.pay
         userctc.form.from = item.place
         userctc.form.amount = item.amount
         userctc.form.paymentreason = item.paymentReason
         userctc.form.currencytype = item.currencyType
-        userctc.form.IFSC = item.IFSCcode
-        
+        userctc.form.ifsc = item.IFSCcode
+
         payref.current.value = item.pay
         fromref.current.value = item.place
         amountref.current.value = item.amount
         prref.current.value = item.paymentReason
         ctref.current.value = item.currencyType
     }
-
+    const payselect = (item) => {
+        payref.current.value = item.userName
+        userctc.setForm({
+            ...userctc.form,
+            ["pay"]: item.userName,
+        });
+        userctc.form.ifsc = item.accountNo
+        setpay(false);
+    }
     return (
         <div className='flex justify-between'>
-            <form className='w-9/12 flex flex-col items-center gap-6 border-r-2 mb-10 overflow-hidden' onSubmit={submit}>
+            <form onClick={() => (loop ? setloop(!loop) : null)} className='w-9/12 flex flex-col items-center gap-6 border-r-2 mb-10 overflow-hidden' onSubmit={submit}>
                 <FaMoneyCheckAlt className='w-20 h-20' />
                 <h1 className='antialiased text-2xl'>Pay someone</h1>
                 <div className='flex'>
@@ -178,27 +188,36 @@ export default function Firstpage({ cont }) {
                 </div>
                 <h1 className='antialiased'>You can pay someone in easy two steps</h1>
                 {/* input field */}
-                <div className='flex flex-col w-1/2 gap-8 justify-between'>
+                <div className='flex flex-col w-2/3 gap-8 justify-between'>
                     <div className='flex justify-between'>
                         <label>Pay<span className='text-red-600'>&emsp;*</span></label>
                         <div className='flex'>
-                            <input list='browsers' title='Choose credit amount' ref={payref} required className='w-60 border-2 pl-2 py-1' id='pay' onChange={handleChange} type="search" placeholder='Enter or choose credit amount' />
-                            <datalist id="browsers">
+                            <section className='flex flex-col'>
+                                <input title='Choose credit amount' ref={payref} required className='w-64 border-2 pl-2 py-1' id='pay' onChange={handleChange} type="search" placeholder='Enter or choose credit amount' />
+                                {/* <datalist id="browsers" className='w-'>
                                 {searchvalue.map((op) => <option key={op.accountNo}>{op.userName}</option>)}
-                            </datalist>
+                            </datalist> */}
+                                {paytouch ? <div className='flex flex-col border-2 shadow-2xl items-center gap-1 h-auto w-64 absolute mt-9 overflow-y-auto bg-white'>
+                                    {
+                                        searchvalue.map((item) => (
+                                            <button onClick={() => payselect(item)} className='border-2 hover:bg-violet-700 hover:text-white w-full p-1' key={item.accountNo}>{item.userName}</button>
+                                        ))
+                                    }
+                                </div> : null}
+                            </section>
                             <BiChevronRight className='border-2 h-9 w-6 cursor-pointer' onClick={() => setloop(!loop)} />
                         </div>
                     </div>
                     <div className='flex justify-between'>
                         <label>From<span className='text-red-600'>&emsp;*</span></label>
                         <div>
-                            <input className='w-60 border-2 pl-2 py-1' ref={fromref} required id='from' placeholder='Enter or choose debit amount' onChange={handleChange}/>
+                            <input className='w-[280px] border-2 pl-2 py-1' ref={fromref} required id='from' placeholder='Enter or choose debit amount' onChange={handleChange} />
                         </div>
                     </div>
                     <div className='flex justify-between'>
                         <label>Amount<span className='text-red-600'>&emsp;*</span></label>
                         <div>
-                            <input className='w-60 border-2 pl-2 py-1' ref={amountref} required id='amount' onChange={handleChange} placeholder='Payment amount' />
+                            <input className='w-56 border-2 pl-2 py-1' ref={amountref} required id='amount' onChange={handleChange} placeholder='Payment amount' />
                             <select name="cars" id="currencytype" className='border-2 h-9 w-14' onChange={handleChange}>
                                 {
                                     values.map((item, index) => (
@@ -210,11 +229,11 @@ export default function Firstpage({ cont }) {
                     </div>
                     <div className='flex justify-between'>
                         <label>payment reason<span className='text-red-600'>&emsp;*</span></label>
-                        <input className='w-60 border-2 pl-2 py-1' ref={prref} required id='paymentreason' onChange={handleChange} placeholder='Choose Payment reason' />
+                        <input className='w-72 border-2 pl-2 py-1' ref={prref} required id='paymentreason' onChange={handleChange} placeholder='Choose Payment reason' />
                     </div>
                     <div className='flex justify-between'>
                         <label>Description for benficiary</label>
-                        <input className='w-60 border-2 pl-2 py-1  text-start' onChange={handleChange} id='description' placeholder='Enter description' />
+                        <textarea rows={2} className='w-72 border-2 pl-2 py-1  text-start' onChange={handleChange} id='description' placeholder='Enter description' />
                     </div>
                     {/* radio button */}
                     <div className='flex justify-between'>
@@ -251,8 +270,9 @@ export default function Firstpage({ cont }) {
                 </div>
             </form>
             <div className='w-2/6'>
-                {loop ? <Template /> : <Recent fill={filldata} />}
+                <Recent fill={filldata} />
             </div>
+            <Template loop={loop} setloop={setloop} />
         </div>
     )
 }

@@ -31,7 +31,7 @@ export default function Recent({ fill }) {
         <div className='overflow-y-auto h-screen'>
             <h1 className='antialiased p-2'>Recent payments</h1>
             {data.map((item) => (
-                <div className='flex cursor-pointer items-center' key={item.ID} onClick={() => click(item)}>
+                <div className='flex cursor-pointer items-center duration-500' key={item.ID} onClick={() => click(item)}>
                     <FaWallet className='m-2' />
                     <div className='space-y-1'>
                         <section className='flex justify-between'>
