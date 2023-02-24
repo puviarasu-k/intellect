@@ -4,6 +4,8 @@ import { AiFillBank } from 'react-icons/ai'
 import { FaFileInvoiceDollar } from 'react-icons/fa'
 import Navbar from '../components/sidebar'
 import Content from '../components/sidecontent'
+import { Suspense } from "react";
+import Loading from './loading'
 
 export default function page() {
   return (
@@ -24,8 +26,11 @@ export default function page() {
 
         </div>
       </div>
+
       <Navbar>
-        <Content />
+        <Suspense fallback={<><Loading/><Loading/><Loading/><Loading/></>}>
+          <Content />
+        </Suspense>
       </Navbar>
       <div>
         <details className='open:bg-white mt-10 border-2 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-4 rounded-lg'>

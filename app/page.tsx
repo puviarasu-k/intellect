@@ -53,7 +53,6 @@ export default function Home() {
             <Image src={image} width={400} height={100} className="motion-safe:animate-spin-slow" alt='summa' />
           </div>
         </div>
-
       </body>
     </>
   )

@@ -5,8 +5,10 @@ import axios from 'axios'
 import { BsClockHistory } from 'react-icons/bs'
 
 async function getData() {
-    const response = await axios.get("http://localhost:4000/traceGet?" + "accountNo=" + "c68a50b3-7bcb-4bf9-aaff-2dbb5ca06da9");
-    return response.data.query
+    const res = await fetch("http://localhost:4000/traceGet?" + "accountNo=" + "c68a50b3-7bcb-4bf9-aaff-2dbb5ca06da9", { next: { revalidate: 1 } });
+    // const response = await axios.get("http://localhost:4000/traceGet?" + "accountNo=" + "c68a50b3-7bcb-4bf9-aaff-2dbb5ca06da9");
+    // return response.data.query
+    return res.json()
 }
 export default async function sidecontent() {
     const data = await getData();
@@ -21,7 +23,7 @@ export default async function sidecontent() {
 
     return (
         <>
-            {data.map((item, index) => {
+            {data.query.map((item, index) => {
                 return (
                     <div key={index}>
                         <div className='ml-4 rounded w-80 h-48 border-2 flex gap-2 space-y-3'>
